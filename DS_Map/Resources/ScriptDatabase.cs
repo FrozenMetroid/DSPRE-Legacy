@@ -262,5 +262,50 @@ namespace DSPRE.Resources
                             .Replace("&", "AND")
             );
         }
+
+        /// <summary>
+        /// Exports all enum dictionaries to individual JSON files in the ROM-specific database folder.
+        /// These JSON files are used by external tools (like Rotom) for script assembly/disassembly.
+        /// Always regenerates from current ROM data to ensure they stay up-to-date.
+        /// </summary>
+        /// <param name="romFolderPath">Path to the ROM-specific database folder</param>
+        public static void ExportEnumJsons(string romFolderPath)
+        {
+            Directory.CreateDirectory(romFolderPath);
+
+            // Export Pokemon names
+            ExportDictionary(pokemonNames, Path.Combine(romFolderPath, "pokemon.json"));
+
+            // Export Item names
+            ExportDictionary(itemNames, Path.Combine(romFolderPath, "items.json"));
+
+            // Export Move names
+            ExportDictionary(moveNames, Path.Combine(romFolderPath, "moves.json"));
+
+            // Export Trainer names
+            ExportDictionary(trainerNames, Path.Combine(romFolderPath, "trainers.json"));
+        }
+
+        /// <summary>
+        /// Exports a dictionary to a JSON file with integer keys.
+        /// </summary>
+        private static void ExportDictionary(Dictionary<ushort, string> dictionary, string filePath)
+        {
+            // Convert Dictionary<ushort, string> to Dictionary<string, string> for JSON serialization
+            var exportDict = new Dictionary<string, string>();
+            foreach (var kvp in dictionary)
+            {
+                exportDict[kvp.Key.ToString()] = kvp.Value;
+            }
+
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
+
+            string json = JsonSerializer.Serialize(exportDict, options);
+            File.WriteAllText(filePath, json);
+        }
     }
 }

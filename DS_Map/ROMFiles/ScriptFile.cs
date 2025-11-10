@@ -541,10 +541,18 @@ namespace DSPRE.ROMFiles
 
             RomInfo.ReloadScriptCommandDictionaries();
 
+            // Get the ROM database folder (parent directory of scrcmd_database.json)
+            string romDatabaseFolder = Path.GetDirectoryName(databasePath);
+
+            // Initialize enum dictionaries from ROM data
             Resources.ScriptDatabase.InitializePokemonNames();
             Resources.ScriptDatabase.InitializeItemNames();
             Resources.ScriptDatabase.InitializeMoveNames();
             Resources.ScriptDatabase.InitializeTrainerNames();
+
+            // Export the enum JSONs for external tools (like Rotom) to use
+            // Always regenerate to ensure they match current ROM data
+            Resources.ScriptDatabase.ExportEnumJsons(romDatabaseFolder);
 
             string expandedDir = Path.Combine(RomInfo.workDir, "expanded", "scripts");
             if (Directory.Exists(expandedDir))
@@ -567,7 +575,8 @@ namespace DSPRE.ROMFiles
             string romFileNameClean = baseFileName.EndsWith("_DSPRE_contents")
                 ? baseFileName.Substring(0, baseFileName.Length - "_DSPRE_contents".Length)
                 : baseFileName;
-            string databasePath = Path.Combine(Program.DatabasePath, "edited_databases", $"{romFileNameClean}_scrcmd_database.json");
+            string romDatabaseFolder = Path.Combine(Program.DatabasePath, "edited_databases", romFileNameClean);
+            string databasePath = Path.Combine(romDatabaseFolder, "scrcmd_database.json");
 
             if (!File.Exists(databasePath))
                 return string.Empty;

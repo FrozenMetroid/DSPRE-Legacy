@@ -164,7 +164,11 @@ namespace DSPRE
             string editedDatabasesDir = Path.Combine(Program.DatabasePath, "edited_databases");
             Directory.CreateDirectory(editedDatabasesDir);
 
-            string targetJsonPath = Path.Combine(editedDatabasesDir, $"{romFileNameClean}_scrcmd_database.json");
+            // Create ROM-specific folder
+            string romDatabaseFolder = Path.Combine(editedDatabasesDir, romFileNameClean);
+            Directory.CreateDirectory(romDatabaseFolder);
+
+            string targetJsonPath = Path.Combine(romDatabaseFolder, "scrcmd_database.json");
             string databaseJsonPath;
 
             switch (gameFamily)
@@ -191,6 +195,15 @@ namespace DSPRE
             {
                 ScriptDatabaseJsonLoader.InitializeFromJson(targetJsonPath, gameVersion);
 
+                // Initialize enum dictionaries from ROM data (Pokemon, Items, Moves, Trainers)
+                Resources.ScriptDatabase.InitializePokemonNames();
+                Resources.ScriptDatabase.InitializeItemNames();
+                Resources.ScriptDatabase.InitializeMoveNames();
+                Resources.ScriptDatabase.InitializeTrainerNames();
+
+                // Export the enum JSONs for external tools (like Rotom) to use
+                // Always regenerate to ensure they match current ROM data
+                Resources.ScriptDatabase.ExportEnumJsons(romDatabaseFolder);
             }
             catch (Exception ex)
             {
