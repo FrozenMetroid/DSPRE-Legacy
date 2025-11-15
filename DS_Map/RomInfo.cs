@@ -20,6 +20,7 @@ namespace DSPRE
     {
         public const string folderSuffix = "_DSPRE_contents"; // changed back to public static string
         private const string dataFolderName = @"data";
+        private const string customNarcFolderName = @"data/zcustom";
 
         public static bool isHGE { get; private set; }
         public static string romID { get; private set; }
@@ -178,7 +179,9 @@ namespace DSPRE
             itemData,
             itemIcons,
 
-            tradeData
+            tradeData,
+
+            eggMoves,
         };
 
         public static Dictionary<DirNames, (string packedDir, string unpackedDir)> gameDirs { get; private set; }
@@ -1394,6 +1397,52 @@ namespace DSPRE
             }
         }
 
+        public static int GetEggMoveTableOffset()
+        {
+            switch (RomInfo.gameFamily)
+            {
+                case RomInfo.GameFamilies.DP:
+                    switch (RomInfo.gameLanguage)
+                    {
+                        case RomInfo.GameLanguages.English:
+                            return 0x20668;
+                        case RomInfo.GameLanguages.Japanese:
+                            return 0x21654;
+                        case RomInfo.GameLanguages.French:
+                            return 0x20620;
+                        case RomInfo.GameLanguages.German:
+                            return 0x20620;
+                        case RomInfo.GameLanguages.Italian:
+                            return 0x20620;
+                        case RomInfo.GameLanguages.Spanish:
+                            return 0x20620;
+                        default:
+                            return 0x20668;
+                    }
+                case RomInfo.GameFamilies.Plat:
+                    switch (RomInfo.gameLanguage)
+                    {
+                        case RomInfo.GameLanguages.English:
+                            return 0x29222;
+                        case RomInfo.GameLanguages.Japanese:
+                            return 0x29012;
+                        case RomInfo.GameLanguages.French:
+                            return 0x2922A;
+                        case RomInfo.GameLanguages.German:
+                            return 0x2923E;
+                        case RomInfo.GameLanguages.Italian:
+                            return 0x29232;
+                        case RomInfo.GameLanguages.Spanish:
+                            return 0x2922A;
+                        default:
+                            return 0x29222;
+                    }
+                default:
+                    AppLogger.Error("GetEggMoveOffset: Unsupported game.");
+                    throw new NotSupportedException("Game not supported");
+            }
+        }
+
         public static int SetTrainerNameMaxLen()
         {
             int maxLength = TrainerFile.defaultNameLen;
@@ -1605,7 +1654,8 @@ namespace DSPRE
                         [DirNames.itemData] = $@"{dataFolderName}\itemtool\itemdata\item_data.narc",
                         [DirNames.itemIcons] = $@"{dataFolderName}\itemtool\itemdata\item_icon.narc",
 
-                        [DirNames.tradeData] = $@"{dataFolderName}\fielddata\pokemon_trade\fld_trade.narc"
+                        [DirNames.tradeData] = $@"{dataFolderName}\fielddata\pokemon_trade\fld_trade.narc",
+                        [DirNames.eggMoves] = $@"{customNarcFolderName}/egg_moves.narc",
                     };
 
                     //Personal Data archive is different for Pearl
@@ -1667,7 +1717,8 @@ namespace DSPRE
                         [DirNames.itemData] = $@"{dataFolderName}\itemtool\itemdata\pl_item_data.narc",
                         [DirNames.itemIcons] = $@"{dataFolderName}\itemtool\itemdata\item_icon.narc",
 
-                        [DirNames.tradeData] = $@"{dataFolderName}\fielddata\pokemon_trade\fld_trade.narc"
+                        [DirNames.tradeData] = $@"{dataFolderName}\fielddata\pokemon_trade\fld_trade.narc",
+                        [DirNames.eggMoves] = $@"{customNarcFolderName}/egg_moves.narc",
                     };
 
                     if (gameLanguage != GameLanguages.Japanese && gameLanguage != GameLanguages.English)
@@ -1719,6 +1770,7 @@ namespace DSPRE
 
                         [DirNames.safariZone] = $@"{dataFolderName}\a\2\3\0",
                         [DirNames.headbutt] = $@"{dataFolderName}\a\2\5\2", //both versions use the same folder with different data
+                        [DirNames.eggMoves] = $@"{dataFolderName}\a\2\2\9"
                     };
 
                     //Encounter archive is different for SS
