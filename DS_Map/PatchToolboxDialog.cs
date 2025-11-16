@@ -17,6 +17,12 @@ namespace DSPRE
 {
     public partial class PatchToolboxDialog : Form
     {
+        // TODO: Fix ARM9 expansion for plat
+        private static bool isARM9PatchBrokenDP = false; // Apparently we dont have it for DP 
+        private static bool isARM9PatchBrokenPlat = true;
+        private static bool isARM9PatchBrokenHGSS = false;
+
+
         public static uint expandedARMfileID = ToolboxDB.syntheticOverlayFileNumbersDB[RomInfo.gameFamily];
 
         public static bool flag_standardizedItems { get; private set; } = false;
@@ -716,24 +722,39 @@ namespace DSPRE
 
         private void ApplyARM9ExpansionButton_Click(object sender, EventArgs e)
         {
+            // TODO: Check the languages studff
             ARM9PatchData data = new ARM9PatchData();
 
             DialogResult d;
             if (RomInfo.gameVersion == GameVersions.Platinum)
             {
-                d = MessageBox.Show("Confirming this process will apply the following changes:\n\n" +
-                    "- Backup ARM9 file (arm9.bin" + backupSuffix + " will be created)." + "\n\n" +
-                    "- Backup Y9 file (y9.bin" + backupSuffix + " will be created)." + "\n\n" +
-                    "- Replace " + (data.branchString.Length / 3 + 1) + " bytes of data at arm9 offset 0x" + data.branchOffset.ToString("X") + " with " + '\n' + data.branchString + "\n\n" +
-                    "- Replace " + (data.initString.Length / 3 + 1) + " bytes of data at arm9 offset 0x" + data.initOffset.ToString("X") + " with " + '\n' + data.initString + "\n\n" +
-                    "- Add overlay file #" + expandedARMfileID + " inside " + '\n' + RomInfo.overlayPath + '\n' + " to accommodate for 88KB of data." + "\n\n" +
-                    "- Expand the y9.bin by 32 bytes to accomodate one additional overlay \n\n" +
-                    "If you do not understand the implications of these changes and how they can affect your game do NOT continue. You can and will break the game if you do not know what you are doing here.\n\n" +
-                    "Do you wish to continue?",
-                    "Confirm to proceed", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (isARM9PatchBrokenPlat)
+                {
+                    d = MessageBox.Show("The ARM9 expansion patch for Platinum US is currently being revisited due to an issue, please accept our apologies.", "Patch broken",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } else
+                {
+                    d = MessageBox.Show("Confirming this process will apply the following changes:\n\n" +
+                        "- Backup ARM9 file (arm9.bin" + backupSuffix + " will be created)." + "\n\n" +
+                        "- Backup Y9 file (y9.bin" + backupSuffix + " will be created)." + "\n\n" +
+                        "- Replace " + (data.branchString.Length / 3 + 1) + " bytes of data at arm9 offset 0x" + data.branchOffset.ToString("X") + " with " + '\n' + data.branchString + "\n\n" +
+                        "- Replace " + (data.initString.Length / 3 + 1) + " bytes of data at arm9 offset 0x" + data.initOffset.ToString("X") + " with " + '\n' + data.initString + "\n\n" +
+                        "- Add overlay file #" + expandedARMfileID + " inside " + '\n' + RomInfo.overlayPath + '\n' + " to accommodate for 88KB of data." + "\n\n" +
+                        "- Expand the y9.bin by 32 bytes to accomodate one additional overlay \n\n" +
+                        "If you do not understand the implications of these changes and how they can affect your game do NOT continue. You can and will break the game if you do not know what you are doing here.\n\n" +
+                        "Do you wish to continue?",
+                        "Confirm to proceed", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                }
+                    
             }
             else {
-                d = MessageBox.Show("Confirming this process will apply the following changes:\n\n" +
+                if (isARM9PatchBrokenHGSS)
+                {
+                    d= MessageBox.Show("The ARM9 expansion patch is currently being revisited due to an issue, please accept our apologies.", "Patch broken",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } else
+                {
+                    d = MessageBox.Show("Confirming this process will apply the following changes:\n\n" +
                     "- Backup ARM9 file (arm9.bin" + backupSuffix + " will be created)." + "\n\n" +
                     "- Replace " + (data.branchString.Length / 3 + 1) + " bytes of data at arm9 offset 0x" + data.branchOffset.ToString("X") + " with " + '\n' + data.branchString + "\n\n" +
                     "- Replace " + (data.initString.Length / 3 + 1) + " bytes of data at arm9 offset 0x" + data.initOffset.ToString("X") + " with " + '\n' + data.initString + "\n\n" +
@@ -741,6 +762,8 @@ namespace DSPRE
                     "If you do not understand the implications of these changes and how they can affect your game do NOT continue. You can and will break the game if you do not know what you are doing here.\n\n" +
                     "Do you wish to continue?",
                     "Confirm to proceed", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                }
+                
             }
 
             if (d == DialogResult.Yes)
@@ -800,7 +823,10 @@ namespace DSPRE
             }
             else
             {
-                MessageBox.Show("No changes have been made.", "Operation canceled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (d != DialogResult.OK)
+                {
+                    MessageBox.Show("No changes have been made.", "Operation canceled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }                    
             }
         }
 
