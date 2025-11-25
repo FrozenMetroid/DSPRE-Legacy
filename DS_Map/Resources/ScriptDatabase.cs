@@ -220,13 +220,30 @@ namespace DSPRE.Resources
             0x00FE,
         };
 
+        public static string StripSpecialCharacters(string input)
+        {
+            string stripped = input;
+            stripped = stripped.Replace('É', 'E');
+            stripped = stripped.Replace("&", "AND");
+            stripped = stripped.Replace(".", "");
+            stripped = stripped.Replace("-", "_");
+            return stripped;
+        }
+
+        public static string FormatStringForScripting(string input)
+        {
+            string formatted = input.ToUpper().Replace(' ', '_');
+            formatted = StripSpecialCharacters(formatted);
+            return formatted;
+        }
+
         public static void InitializePokemonNames()
         {
             string[] names = GetPokemonNames();
             pokemonNames = names.Select((name, index) => new { name, index })
                              .ToDictionary(
                                  x => (ushort)x.index,
-                                 x => "SPECIES_" + x.name.ToUpper().Replace(' ', '_')
+                                 x => "SPECIES_" + FormatStringForScripting(x.name)
                              );
         }
         public static void InitializeItemNames()
@@ -235,7 +252,7 @@ namespace DSPRE.Resources
             itemNames = names.Select((name, index) => new { name, index })
                              .ToDictionary(
                                  x => (ushort)x.index,
-                                 x => "ITEM_" + x.name.ToUpper().Replace(' ', '_').Replace('É', 'E')
+                                 x => "ITEM_" + FormatStringForScripting(x.name)
                              );
         }
         public static void InitializeMoveNames()
@@ -244,7 +261,7 @@ namespace DSPRE.Resources
             moveNames = names.Select((name, index) => new { name, index })
                              .ToDictionary(
                                  x => (ushort)x.index,
-                                 x => "MOVE_" + x.name.ToUpper().Replace(' ', '_')
+                                 x => "MOVE_" + FormatStringForScripting(x.name)
                              );
         }
         public static void InitializeTrainerNames()
@@ -256,10 +273,7 @@ namespace DSPRE.Resources
                     index => (ushort)index,
                     index => index == 0
                         ? "TRAINER_NONE"
-                        : $"TRAINER_{names[index]}_{index:D3}"
-                            .ToUpper()
-                            .Replace(' ', '_')
-                            .Replace("&", "AND")
+                        : $"TRAINER_{FormatStringForScripting(names[index])}_{index:D3}"
             );
         }
 
