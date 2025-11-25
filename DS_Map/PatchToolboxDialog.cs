@@ -736,11 +736,9 @@ namespace DSPRE
                 {
                     d = MessageBox.Show("Confirming this process will apply the following changes:\n\n" +
                         "- Backup ARM9 file (arm9.bin" + backupSuffix + " will be created)." + "\n\n" +
-                        "- Backup Y9 file (y9.bin" + backupSuffix + " will be created)." + "\n\n" +
                         "- Replace " + (data.branchString.Length / 3 + 1) + " bytes of data at arm9 offset 0x" + data.branchOffset.ToString("X") + " with " + '\n' + data.branchString + "\n\n" +
                         "- Replace " + (data.initString.Length / 3 + 1) + " bytes of data at arm9 offset 0x" + data.initOffset.ToString("X") + " with " + '\n' + data.initString + "\n\n" +
                         "- Add overlay file #" + expandedARMfileID + " inside " + '\n' + RomInfo.overlayPath + '\n' + " to accommodate for 88KB of data." + "\n\n" +
-                        "- Expand the y9.bin by 32 bytes to accomodate one additional overlay \n\n" +
                         "If you do not understand the implications of these changes and how they can affect your game do NOT continue. You can and will break the game if you do not know what you are doing here.\n\n" +
                         "Do you wish to continue?",
                         "Confirm to proceed", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
