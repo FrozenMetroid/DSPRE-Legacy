@@ -16,16 +16,31 @@ namespace DSPRE.Resources.ROMToolboxDB {
             internal string y9String;
 
             public static Dictionary<string, string> arm9ExpansionCodeDB = new Dictionary<string, string>() {
-                ["branchString" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.English] = "05 F1 34 FC",
-                ["branchString" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.Spanish] = "05 F1 04 FD",
-                ["branchString" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.English] = "77 F0 CA F9",
-                ["branchString" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.Spanish] = "77 F0 1A FA", 
+                ["branchString" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.English] = "05 F1 5C FF",
+                ["branchString" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.Spanish] = "06 F1 2C F8",
+                ["branchString" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.Italian] = "05 F1 CC FF",
+                ["branchString" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.French] = "06 F1 1C F8",
+                ["branchString" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.German] = "00 F1 46 FD",
+                ["branchString" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.English] = "00 F1 5E FC",
+                ["branchString" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.Spanish] = "00 F1 5C FD", 
+                ["branchString" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.Italian] = "00 F1 0C FD", 
+                ["branchString" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.French] = "00 F1 4C FD", 
+                ["branchString" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.German] = "00 F1 2C FD", 
+                ["branchString" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.Japanese] = "FF F0 58 FE", 
                 ["branchString" + "_" + RomInfo.GameFamilies.HGSS + "_" + RomInfo.GameLanguages.English] = "0F F1 30 FB",
                 ["branchString" + "_" + RomInfo.GameFamilies.HGSS + "_" + RomInfo.GameLanguages.Spanish] = "0F F1 40 FB",
 
-                ["initString" + "_" + RomInfo.GameFamilies.DP] = "FC B5 05 48 C0 46 41 21 09 22 02 4D A8 47 00 20 03 21 FC BD F1 64 00 02 00 80 3C 02",  //Valid for ENG and ESP, also for P            
-                ["initString" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.English] = "04 B5 7A 20 02 21 00 F0 03 F8 00 20 03 21 04 BD F8 B5 0C 1C 00 21 C9 43 00 4A 10 47 99 65 00 02", 
-                ["initString" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.Spanish] = "04 B5 7A 20 02 21 00 F0 03 F8 00 20 03 21 04 BD F8 B5 0C 1C 00 21 C9 43 00 4A 10 47 AD 65 00 02",
+                ["initString" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.English] = "FC B5 04 48 41 21 09 22 FF F6 D4 FC 00 20 03 21 FC BD 00 00 00 80 3C 02 00",  //Valid also for P            
+                ["initString" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.Spanish] = "FC B5 04 48 41 21 09 22 FF F6 04 FC 00 20 03 21 FC BD 00 00 00 80 3C 02 00",  //Valid also for P            
+                ["initString" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.Italian] = "FC B5 04 48 41 21 09 22 FF F6 64 FC 00 20 03 21 FC BD 00 00 00 80 3C 02 00",  //Valid also for P            
+                ["initString" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.French] = "FC B5 04 48 41 21 09 22 FF F6 14 FC 00 20 03 21 FC BD 00 00 00 80 3C 02 00",  //Valid also for P            
+                ["initString" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.German] = "FC B5 04 48 41 21 09 22 FF F6 34 FC 00 20 03 21 FC BD 00 00 00 80 3C 02 00",  //Valid also for P            
+                ["initString" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.English] = "FC B5 04 48 41 21 09 22 05 F7 92 FA 00 20 03 21 FC BD 00 00 00 80 3C 02 00", 
+                ["initString" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.Spanish] = "FC B5 04 48 41 21 09 22 05 F7 9E F9 00 20 03 21 FC BD 00 00 00 80 3C 02 00",
+                ["initString" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.Italian] = "FC B5 04 48 41 21 09 22 05 F7 EE F9 00 20 03 21 FC BD 00 00 00 80 3C 02 00",
+                ["initString" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.French] = "FC B5 04 48 41 21 09 22 05 F7 AE F9 00 20 03 21 FC BD 00 00 00 80 3C 02 00",
+                ["initString" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.German] = "FC B5 04 48 41 21 09 22 05 F7 CE F9 00 20 03 21 FC BD 00 00 00 80 3C 02 00",
+                ["initString" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.Japanese] = "FC B5 04 48 41 21 09 22 06 F7 38 F8 00 20 03 21 FC BD 00 00 00 80 3C 02 00",
                 ["initString" + "_" + RomInfo.GameFamilies.HGSS] = "FC B5 05 48 C0 46 1C 21 00 22 02 4D A8 47 00 20 03 21 FC BD 09 75 00 02 00 80 3C 02" //Valid for ENG and ESP, also for SS
             };
             public static Dictionary<string, uint> arm9ExpansionOffsetsDB = new Dictionary<string, uint>() {
@@ -33,8 +48,11 @@ namespace DSPRE.Resources.ROMToolboxDB {
                 ["branchOffset" + "_" + RomInfo.GameFamilies.Plat] = 0x02000CB4, 
                 ["branchOffset" + "_" + RomInfo.GameFamilies.HGSS] = 0x02000CD0, //Valid also for SS
 
-                ["initOffset" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.English] = 0x021064EC,
-                ["initOffset" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.Spanish] = 0x0210668C,
+                ["initOffset" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.English] = 0x02106B3C,
+                ["initOffset" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.Spanish] = 0x02106CDC,
+                ["initOffset" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.Italian] = 0x02106C1C,
+                ["initOffset" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.French] = 0x02106CBC,
+                ["initOffset" + "_" + RomInfo.GameFamilies.DP + "_" + RomInfo.GameLanguages.German] = 0x02106C7C,
                 ["initOffset" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.English] = 0x0207804C, 
                 ["initOffset" + "_" + RomInfo.GameFamilies.Plat + "_" + RomInfo.GameLanguages.Spanish] = 0x020780EC, 
                 ["initOffset" + "_" + RomInfo.GameFamilies.HGSS + "_" + RomInfo.GameLanguages.English] = 0x02110334,
@@ -49,9 +67,8 @@ namespace DSPRE.Resources.ROMToolboxDB {
                 initOffset = arm9ExpansionOffsetsDB[nameof(initOffset) + "_" + RomInfo.gameFamily + "_" + RomInfo.gameLanguage] - ARM9.address;
                 branchString = arm9ExpansionCodeDB[nameof(branchString) + "_" + RomInfo.gameFamily + "_" + RomInfo.gameLanguage];
 
-                if (RomInfo.gameFamily == GameFamilies.Plat) {
+                if (RomInfo.gameFamily != GameFamilies.HGSS) {
                     initString = arm9ExpansionCodeDB[nameof(initString) + "_" + RomInfo.gameFamily + "_" + RomInfo.gameLanguage];
-                    y9String = Y9ExpansionCodeDB[GameFamilies.Plat];
                 } else {
                     initString = arm9ExpansionCodeDB[nameof(initString) + "_" + RomInfo.gameFamily];
                 }

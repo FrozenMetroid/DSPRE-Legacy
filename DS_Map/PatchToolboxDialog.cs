@@ -769,22 +769,14 @@ namespace DSPRE
             if (d == DialogResult.Yes)
             {
                 File.Copy(RomInfo.arm9Path, RomInfo.arm9Path + backupSuffix, overwrite: true);
-                File.Copy(RomInfo.overlayTablePath, RomInfo.overlayTablePath + backupSuffix, overwrite: true);
 
                 try
                 {
                     ARM9.WriteBytes(DSUtils.HexStringToByteArray(data.branchString), data.branchOffset); //Write new branchOffset
                     ARM9.WriteBytes(DSUtils.HexStringToByteArray(data.initString), data.initOffset); //Write new initOffset
 
-                    string fullFilePath;
-                    if (RomInfo.gameFamily == GameFamilies.Plat)
-                    {
-                        fullFilePath = RomInfo.overlayPath + '\\' + "overlay_" + expandedARMfileID.ToString("D4") + ".bin";
-                    }
-                    else {
-                        fullFilePath = RomInfo.gameDirs[DirNames.synthOverlay].unpackedDir + '\\' + expandedARMfileID.ToString("D4");
-                        File.Delete(fullFilePath);
-                    }
+                    string fullFilePath = RomInfo.gameDirs[DirNames.synthOverlay].unpackedDir + '\\' + expandedARMfileID.ToString("D4");
+                    File.Delete(fullFilePath);
                     using (BinaryWriter f = new BinaryWriter(File.Create(fullFilePath)))
                     {
                         for (int i = 0; i < 0x16000; i++)
@@ -798,12 +790,6 @@ namespace DSPRE
                     switch (RomInfo.gameFamily)
                     {
                         case GameFamilies.Plat:
-                            byte[] bytesToAppend = DSUtils.HexStringToByteArray(data.y9String);
-                            using (FileStream fs = new FileStream(RomInfo.overlayTablePath, FileMode.Append, FileAccess.Write))
-                            {
-                                fs.Write(bytesToAppend, 0, bytesToAppend.Length);
-                            }
-                            goto case GameFamilies.HGSS;
                         case GameFamilies.HGSS:
                             BDHCamPatchButton.Text = "Apply Patch";
                             BDHCamPatchButton.Enabled = true;
