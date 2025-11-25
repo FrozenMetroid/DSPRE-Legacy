@@ -18,8 +18,8 @@ namespace DSPRE
     public partial class PatchToolboxDialog : Form
     {
         // TODO: Fix ARM9 expansion for plat
-        private static bool isARM9PatchBrokenDP = false; // Apparently we dont have it for DP 
-        private static bool isARM9PatchBrokenPlat = true;
+        private static bool isARM9PatchBrokenDP = false; 
+        private static bool isARM9PatchBrokenPlat = false;
         private static bool isARM9PatchBrokenHGSS = false;
 
 
