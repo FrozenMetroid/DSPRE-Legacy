@@ -112,6 +112,21 @@
     <Compile Include="DSUtils\NSBUtils.cs" />
     <Compile Include="DSUtils\OverlayUtils.cs" />
     <Compile Include="DSUtils\TextConverter.cs" />
+    <Compile Include="Editors\EggMoveEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\EggMoveEditor.Designer.cs">
+      <DependentUpon>EggMoveEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editors\LearnsetBulkEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\TMEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editors\TMEditor.Designer.cs">
+      <DependentUpon>TMEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Editors\TrainerEditor\DVCalculator\DVCalc.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -315,7 +330,6 @@
     <Compile Include="Editors\LearnsetEditor.designer.cs">
       <DependentUpon>LearnsetEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="MessageEnc\EncryptText.cs" />
     <Compile Include="Editors\OverlayEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -344,6 +358,13 @@
     </Compile>
     <Compile Include="ReopenProjectConfirmation.Designer.cs">
       <DependentUpon>ReopenProjectConfirmation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\CharMaps\CharMapManager.cs" />
+    <Compile Include="Resources\CharMaps\CharMapManagerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Resources\CharMaps\CharMapManagerForm.Designer.cs">
+      <DependentUpon>CharMapManagerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Resources\CustomScrcmdManager.cs">
       <SubType>Form</SubType>
@@ -524,6 +545,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\writeText.Designer.cs" />
+    <EmbeddedResource Include="Editors\EggMoveEditor.resx">
+      <DependentUpon>EggMoveEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editors\TMEditor.resx">
+      <DependentUpon>TMEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Editors\TrainerEditor\DVCalculator\DVCalc.resx">
       <DependentUpon>DVCalc.cs</DependentUpon>
     </EmbeddedResource>
@@ -626,6 +653,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ReopenProjectConfirmation.resx">
       <DependentUpon>ReopenProjectConfirmation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\CharMaps\CharMapManagerForm.resx">
+      <DependentUpon>CharMapManagerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\CustomScrcmdManager.resx">
       <DependentUpon>CustomScrcmdManager.cs</DependentUpon>

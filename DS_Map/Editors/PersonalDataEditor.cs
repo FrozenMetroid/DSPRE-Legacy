@@ -14,6 +14,7 @@ namespace DSPRE {
 
         private readonly string[] fileNames;
         private readonly string[] pokenames;
+        private readonly string[] machineMoveNames;
 
         private int currentLoadedId = 0;
         private PokemonPersonalData currentLoadedFile = null;
@@ -26,13 +27,14 @@ namespace DSPRE {
 
         public PersonalDataEditor(string[] itemNames, string[] abilityNames, System.Windows.Forms.Control parent, PokemonEditor pokeEditor) {
             this.fileNames = RomInfo.GetPokemonNames().ToArray();;
+            this.machineMoveNames = TMEditor.ReadMachineMoveNames().ToArray();
             this._parent = pokeEditor;
             InitializeComponent();
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Size = parent.Size;
             this.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
             Helpers.DisableHandlers();
-
+            ScriptDatabase.InitializeMoveNamesIfNeeded();
             BindingList<string> listItemNames = new BindingList<string>(itemNames);
             item1InputComboBox.DataSource = new BindingSource(listItemNames, string.Empty);
             item2InputComboBox.DataSource = new BindingSource(listItemNames, string.Empty);
@@ -546,7 +548,11 @@ namespace DSPRE {
             int dataIndex = 0;
             byte tot = (byte)(PokemonPersonalData.tmsCount + PokemonPersonalData.hmsCount);
             for (byte i = 0; i < tot; i++) {
-                string currentItem = MachineNameFromZeroBasedIndex(i);
+                
+                string machineLabel = TMEditor.MachineLabelFromIndex(i);
+                string machineMoveName = machineMoveNames.Length > i ? machineMoveNames[i] : $"UNK_{i}";
+                string currentItem = $"{machineLabel} - {machineMoveName}";
+
                 if (dataIndex < currentLoadedFile.machines.Count && currentLoadedFile.machines.Contains(i)) {
                     addedMachinesListBox.Items.Add(currentItem);
                     dataIndex++;
@@ -615,34 +621,27 @@ namespace DSPRE {
             }
         }
 
-        private static string MachineNameFromZeroBasedIndex(int n) {
-            //0-91 --> TMs
-            //>=92 --> HM
-            n += 1;
-            int diff = n - PokemonPersonalData.tmsCount;
-            string item = diff > 0 ? "HM " + diff : "TM " + n;
-            return item;
-        }
-        private static int ZeroBasedIndexFromMachineName(string machineName) {
+        private static int ZeroBasedIndexFromMachineName(string machineName)
+        {
             // Split the machineName to get the prefix (TM or HM) and the number
-            string[] parts = machineName.Split(' ');
+            // Format: "TM01 - Focus Punch" or "HM01 - Cut"
+            var parts = machineName.Split('-');
+            var machineLabel = parts[0].Trim(); // "TMXX" or "HMXX"
 
-            if (parts.Length == 2) {
-                // Check if the first part is "TM" (case-insensitive)
-                bool isTM = parts[0].Equals("TM", StringComparison.OrdinalIgnoreCase);
+            int machineIndex = -1;
 
-                if (isTM || parts[0].Equals("HM", StringComparison.OrdinalIgnoreCase)) {
-                    if (int.TryParse(parts[1], out int number)) {
-                        number--;
-                        // Calculate the index based on the prefix (TM or HM)
-                        int index = isTM ? number : number + PokemonPersonalData.tmsCount;
-                        return index;
-                    }
-                }
+            if (machineLabel.StartsWith("TM"))
+            {
+                machineIndex = int.Parse(machineLabel.Substring(2)) - 1;
+            }
+            else if (machineLabel.StartsWith("HM"))
+            {
+                machineIndex = int.Parse(machineLabel.Substring(2)) + PokemonPersonalData.tmsCount - 1;
             }
 
-            // Return -1 to indicate an invalid input or failure to parse
-            return -1;
+            return machineIndex;
+
         }
+
     }
 }
