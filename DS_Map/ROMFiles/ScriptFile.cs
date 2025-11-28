@@ -541,10 +541,21 @@ namespace DSPRE.ROMFiles
 
             RomInfo.ReloadScriptCommandDictionaries();
 
+            // Get the ROM database folder (parent directory of scrcmd_database.json)
+            string romDatabaseFolder = Path.GetDirectoryName(databasePath);
+
+            // Unpack text archives NARC if needed - required for reading Pokemon/Item/Move/Trainer names
+            DSUtils.TryUnpackNarcs(new List<RomInfo.DirNames> { RomInfo.DirNames.textArchives });
+
+            // Initialize enum dictionaries from ROM data
             Resources.ScriptDatabase.InitializePokemonNames();
             Resources.ScriptDatabase.InitializeItemNames();
             Resources.ScriptDatabase.InitializeMoveNames();
             Resources.ScriptDatabase.InitializeTrainerNames();
+
+            // Export the enum JSONs for external tools (like Rotom) to use
+            // Always regenerate to ensure they match current ROM data
+            Resources.ScriptDatabase.ExportEnumJsons(romDatabaseFolder);
 
             string expandedDir = Path.Combine(RomInfo.workDir, "expanded", "scripts");
             if (Directory.Exists(expandedDir))
@@ -567,7 +578,8 @@ namespace DSPRE.ROMFiles
             string romFileNameClean = baseFileName.EndsWith("_DSPRE_contents")
                 ? baseFileName.Substring(0, baseFileName.Length - "_DSPRE_contents".Length)
                 : baseFileName;
-            string databasePath = Path.Combine(Program.DatabasePath, "edited_databases", $"{romFileNameClean}_scrcmd_database.json");
+            string romDatabaseFolder = Path.Combine(Program.DatabasePath, "edited_databases", romFileNameClean);
+            string databasePath = Path.Combine(romDatabaseFolder, "scrcmd_database.json");
 
             if (!File.Exists(databasePath))
                 return string.Empty;
@@ -697,6 +709,18 @@ namespace DSPRE.ROMFiles
         /// </summary>
         public static bool BuildRequiredBins()
         {
+            // Unpack text archives NARC if needed - required for reading Pokemon/Item/Move/Trainer names
+            // The InitializeXxxNames() methods below depend on TextArchive being readable
+            DSUtils.TryUnpackNarcs(new List<RomInfo.DirNames> { RomInfo.DirNames.textArchives });
+
+            // Initialize parameter dictionaries needed for parsing plaintext scripts
+            // These dictionaries must be populated before parsing scripts that contain
+            // friendly names like TRAINER_NONE, SPECIES_PIKACHU, ITEM_POTION, etc.
+            Resources.ScriptDatabase.InitializePokemonNames();
+            Resources.ScriptDatabase.InitializeItemNames();
+            Resources.ScriptDatabase.InitializeMoveNames();
+            Resources.ScriptDatabase.InitializeTrainerNames();
+
             string expandedDir = Path.Combine(RomInfo.workDir, "expanded", "scripts");
 
             if (!Directory.Exists(expandedDir))

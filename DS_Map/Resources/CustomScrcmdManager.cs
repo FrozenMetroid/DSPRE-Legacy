@@ -18,7 +18,7 @@ namespace DSPRE.Resources
 
         public class CustomScrcmdSetting
         {
-            public string JsonPath { get; set; }
+            public string FolderName { get; set; }
         }
 
         public CustomScrcmdManager()
@@ -33,15 +33,19 @@ namespace DSPRE.Resources
             grid.Rows.Clear();
             foreach (var setting in settings)
             {
-                grid.Rows.Add(setting.JsonPath);
+                grid.Rows.Add(setting.FolderName);
             }
         }
 
         public static List<CustomScrcmdSetting> LoadDBs()
         {
-            return Directory.GetFiles(CustomDBsPath, "*.json")
-                .Select(filePath => new CustomScrcmdSetting {
-                    JsonPath = Path.GetFileName(filePath)
+            if (!Directory.Exists(CustomDBsPath))
+                return new List<CustomScrcmdSetting>();
+
+            return Directory.GetDirectories(CustomDBsPath)
+                .Select(folderPath => new CustomScrcmdSetting
+                {
+                    FolderName = Path.GetFileName(folderPath)
                 })
                 .ToList();
         }
@@ -51,17 +55,23 @@ namespace DSPRE.Resources
             if (CustomScrcmdDataGrid.SelectedRows.Count == 0) return;
             using (OpenFileDialog dialog = new OpenFileDialog())
             {
-                dialog.Title = "Select a file";
+                dialog.Title = "Select a script command database file";
                 dialog.Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
                 dialog.InitialDirectory = Program.DatabasePath;
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    var DBtoreplace = CustomScrcmdDataGrid.SelectedRows[0].Cells[0].Value.ToString();
+                    var folderName = CustomScrcmdDataGrid.SelectedRows[0].Cells[0].Value.ToString();
+                    var romDatabaseFolder = Path.Combine(CustomDBsPath, folderName);
+                    var targetPath = Path.Combine(romDatabaseFolder, "scrcmd_database.json");
                     var newDBname = dialog.FileName;
 
-                    File.Delete(Path.Combine(CustomDBsPath, DBtoreplace));
-                    File.Copy(newDBname, Path.Combine(CustomDBsPath, DBtoreplace));
+                    // Replace the scrcmd_database.json in the folder
+                    if (File.Exists(targetPath))
+                    {
+                        File.Delete(targetPath);
+                    }
+                    File.Copy(newDBname, targetPath);
 
                     UpdateDataGrid(CustomScrcmdDataGrid);
 
@@ -77,7 +87,7 @@ namespace DSPRE.Resources
 
                     if (result == DialogResult.Yes)
                     {
-                        ReloadAndReparseScripts(Path.Combine(CustomDBsPath, DBtoreplace));
+                        ReloadAndReparseScripts(targetPath);
                     }
                 }
                 else
@@ -155,15 +165,21 @@ namespace DSPRE.Resources
         {
             if (CustomScrcmdDataGrid.SelectedRows.Count == 0) return;
 
-            string selectedName = CustomScrcmdDataGrid.SelectedRows[0].Cells[0].Value?.ToString();
+            string folderName = CustomScrcmdDataGrid.SelectedRows[0].Cells[0].Value?.ToString();
+            string romDatabaseFolder = Path.Combine(CustomDBsPath, folderName);
+            string sourcePath = Path.Combine(romDatabaseFolder, "scrcmd_database.json");
 
-            // Where your edited JSONs live
-            string sourcePath = Path.Combine(CustomDBsPath, selectedName);
+            if (!File.Exists(sourcePath))
+            {
+                MessageBox.Show($"Script command database not found:\n{sourcePath}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             using (var dialog = new SaveFileDialog())
             {
-                dialog.Title = "Export JSON";
-                dialog.FileName = selectedName;                 
+                dialog.Title = "Export Script Command Database";
+                dialog.FileName = $"{folderName}_scrcmd_database.json";
                 dialog.Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
                 dialog.DefaultExt = "json";
                 dialog.AddExtension = true;

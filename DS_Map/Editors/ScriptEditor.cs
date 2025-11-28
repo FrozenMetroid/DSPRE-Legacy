@@ -192,7 +192,7 @@ namespace DSPRE.Editors
                         Helpers.statusLabelMessage("Loading custom script database...");
                         Update();
 
-                        // Save database permanently to edited_databases
+                        // Save database permanently to edited_databases folder structure
                         string editedDatabasesDir = Path.Combine(Program.DatabasePath, "edited_databases");
                         Directory.CreateDirectory(editedDatabasesDir);
 
@@ -201,7 +201,11 @@ namespace DSPRE.Editors
                             ? baseFileName.Substring(0, baseFileName.Length - "_DSPRE_contents".Length)
                             : baseFileName;
 
-                        string targetJsonPath = Path.Combine(editedDatabasesDir, $"{romFileNameClean}_scrcmd_database.json");
+                        // Create ROM-specific folder
+                        string romDatabaseFolder = Path.Combine(editedDatabasesDir, romFileNameClean);
+                        Directory.CreateDirectory(romDatabaseFolder);
+
+                        string targetJsonPath = Path.Combine(romDatabaseFolder, "scrcmd_database.json");
 
                         File.Copy(dialog.FileName, targetJsonPath, overwrite: true);
                         AppLogger.Info($"Script database saved permanently to: {targetJsonPath}");
