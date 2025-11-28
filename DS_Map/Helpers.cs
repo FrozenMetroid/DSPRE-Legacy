@@ -195,6 +195,9 @@ namespace DSPRE
             {
                 ScriptDatabaseJsonLoader.InitializeFromJson(targetJsonPath, gameVersion);
 
+                // Unpack text archives NARC if needed - required for reading Pokemon/Item/Move/Trainer names
+                DSUtils.TryUnpackNarcs(new List<RomInfo.DirNames> { RomInfo.DirNames.textArchives });
+
                 // Initialize enum dictionaries from ROM data (Pokemon, Items, Moves, Trainers)
                 Resources.ScriptDatabase.InitializePokemonNames();
                 Resources.ScriptDatabase.InitializeItemNames();

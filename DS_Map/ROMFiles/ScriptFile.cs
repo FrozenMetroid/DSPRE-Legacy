@@ -544,6 +544,9 @@ namespace DSPRE.ROMFiles
             // Get the ROM database folder (parent directory of scrcmd_database.json)
             string romDatabaseFolder = Path.GetDirectoryName(databasePath);
 
+            // Unpack text archives NARC if needed - required for reading Pokemon/Item/Move/Trainer names
+            DSUtils.TryUnpackNarcs(new List<RomInfo.DirNames> { RomInfo.DirNames.textArchives });
+
             // Initialize enum dictionaries from ROM data
             Resources.ScriptDatabase.InitializePokemonNames();
             Resources.ScriptDatabase.InitializeItemNames();
@@ -706,6 +709,10 @@ namespace DSPRE.ROMFiles
         /// </summary>
         public static bool BuildRequiredBins()
         {
+            // Unpack text archives NARC if needed - required for reading Pokemon/Item/Move/Trainer names
+            // The InitializeXxxNames() methods below depend on TextArchive being readable
+            DSUtils.TryUnpackNarcs(new List<RomInfo.DirNames> { RomInfo.DirNames.textArchives });
+
             // Initialize parameter dictionaries needed for parsing plaintext scripts
             // These dictionaries must be populated before parsing scripts that contain
             // friendly names like TRAINER_NONE, SPECIES_PIKACHU, ITEM_POTION, etc.
