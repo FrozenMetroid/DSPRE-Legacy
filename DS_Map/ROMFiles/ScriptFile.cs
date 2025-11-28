@@ -706,6 +706,14 @@ namespace DSPRE.ROMFiles
         /// </summary>
         public static bool BuildRequiredBins()
         {
+            // Initialize parameter dictionaries needed for parsing plaintext scripts
+            // These dictionaries must be populated before parsing scripts that contain
+            // friendly names like TRAINER_NONE, SPECIES_PIKACHU, ITEM_POTION, etc.
+            Resources.ScriptDatabase.InitializePokemonNames();
+            Resources.ScriptDatabase.InitializeItemNames();
+            Resources.ScriptDatabase.InitializeMoveNames();
+            Resources.ScriptDatabase.InitializeTrainerNames();
+
             string expandedDir = Path.Combine(RomInfo.workDir, "expanded", "scripts");
 
             if (!Directory.Exists(expandedDir))
