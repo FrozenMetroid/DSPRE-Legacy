@@ -11,8 +11,7 @@ using System.Windows.Forms;
 
 namespace DSPRE
 {
-
-    struct EggMoveEntry
+    public struct EggMoveEntry
     {
         public int speciesID;
         public List<ushort> moveIDs;
@@ -73,7 +72,7 @@ namespace DSPRE
             }
         }
 
-        private void PopulateEggMoveData()
+        public void PopulateEggMoveData()
         {
             try 
             {
@@ -93,6 +92,11 @@ namespace DSPRE
                 AppLogger.Error($"Failed to populate egg move data: {ex.Message}");
                 MessageBox.Show("An error occurred while loading egg move data. Please check the logs for more details.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        public List<EggMoveEntry> GetEggMoveData()
+        {
+            return eggMoveData;
         }
 
         private EndianBinaryReader GetEggDataReader()
@@ -131,7 +135,6 @@ namespace DSPRE
                     useSpecialFormat = true;
                     MAX_EGG_MOVES = maxMoveCount;
                     MAX_TABLE_SIZE = ushort.MaxValue;
-                    return null; // reader will not be used in this case
                 }
             }
 
@@ -251,7 +254,6 @@ namespace DSPRE
                     writer.Close();
                 }
                 else if (useSpecialFormat)
-                //else if (true) // Temporarily force special format for testing
                 {
                     WriteEggMoveDataSpecial();
                 }
@@ -374,7 +376,7 @@ namespace DSPRE
             monListBox.Items.Clear();
             foreach (var entry in eggMoveData)
             {
-                string monName = (entry.speciesID >= 0 && entry.speciesID < monNames.Length) ? monNames[entry.speciesID] : $"UNK_{entry.speciesID})";
+                string monName = (entry.speciesID >= 0 && entry.speciesID < monNames.Length) ? monNames[entry.speciesID] : $"SPECIES_{entry.speciesID}";
                 monListBox.Items.Add(monName);
             }
             monListBox.EndUpdate();
@@ -395,7 +397,7 @@ namespace DSPRE
             var entry = eggMoveData[entryIndex];
             foreach (var moveID in entry.moveIDs)
             {
-                string moveName = (moveID < moveNames.Length) ? moveNames[moveID] : $"UNK_{moveID}";
+                string moveName = (moveID < moveNames.Length) ? moveNames[moveID] : $"MOVE_{moveID}";
                 eggMoveListBox.Items.Add(moveName);
             }
 
@@ -854,7 +856,7 @@ namespace DSPRE
 
             foreach (var entry in eggMoveData)
             {
-                string monName = (entry.speciesID >= 0 && entry.speciesID < monNames.Length) ? monNames[entry.speciesID] : $"UNK_{entry.speciesID})";
+                string monName = (entry.speciesID >= 0 && entry.speciesID < monNames.Length) ? monNames[entry.speciesID] : $"MOVE{entry.speciesID})";
                 if (monName.ToLower().Contains(searchText))
                 {
                     monSearchListBox.Items.Add(monName);
@@ -933,7 +935,7 @@ namespace DSPRE
                         }
                         else
                         {
-                            affectedMons.Add($"UNK_{entry.speciesID}");
+                            affectedMons.Add($"SPECIES_{entry.speciesID}");
                         }
                     }
                 }
@@ -986,7 +988,7 @@ namespace DSPRE
                 }
                 else
                 {
-                    affectedMons.Add($"UNK_{entry.speciesID}");
+                    affectedMons.Add($"SPECIES_{entry.speciesID}");
                 }                
             }
 
@@ -1011,6 +1013,58 @@ namespace DSPRE
             if (!CheckDiscardChanges())
             {
                 e.Cancel = true;
+            }
+        }
+
+        private void exportButton_Click(object sender, EventArgs e)
+        {
+            var saveFileDialog = new SaveFileDialog
+            {
+                Title = "Export Egg Move Data",
+                Filter = "CSV Files (*.csv)|*.csv|All Files (*.*)|*.*",
+                DefaultExt = "csv",
+                FileName = "egg_moves.csv"
+            };
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                bool success = DocTool.ExportEggMoveDataToCSV(eggMoveData, saveFileDialog.FileName, monNames, moveNames);
+                if (success)
+                {
+                    MessageBox.Show("Egg move data exported successfully.", "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Failed to export egg move data. Please check the logs for more details.", "Export Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void importButton_Click(object sender, EventArgs e)
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Title = "Import Egg Move Data",
+                Filter = "CSV Files (*.csv)|*.csv|All Files (*.*)|*.*",
+                DefaultExt = "csv"
+            };
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                bool success = DocTool.ImportEggMoveDataFromCSV(ref eggMoveData, openFileDialog.FileName);
+                if (success)
+                {
+                    PopulateMonList();
+                    UpdateEntryCountLabel();
+                    UpdateListSizeLabel();
+                    SetDirty(true);
+                    MessageBox.Show("Egg move data imported successfully.", "Import Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Failed to import egg move data. Please check the logs for more details.", "Import Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                }
             }
         }
     }
