@@ -3,7 +3,8 @@ using System.IO;
 using System.Windows.Forms;
 using static DSPRE.RomInfo;
 
-namespace DSPRE.ROMFiles {
+namespace DSPRE.ROMFiles
+{
     /* ---------------------- HEADER DATA STRUCTURE (DPPt):----------------------------
         
        0x0  //  byte:       Area data value
@@ -83,16 +84,18 @@ namespace DSPRE.ROMFiles {
     /// <summary>
     /// General class to store common map header data across all Gen IV Pokémon NDS games
     /// </summary>
-    public abstract class MapHeader : RomFile {
+    public abstract class MapHeader : RomFile
+    {
         /*System*/
         public static readonly string DefaultFilter = "DSPRE Header File (*.dsh; *.bin)|*.dsh;*.bin";
         public ushort ID { get; set; }
-        public static readonly byte length = 24;
+        public static readonly byte length = 30;
         public static readonly string nameSeparator = " -   ";
         public const int HGSS_NULL_ENCOUNTER_FILE_ID = 0xff;
         public const int DPPT_NULL_ENCOUNTER_FILE_ID = 0xffff;
 
-        public enum SearchableFields: byte {
+        public enum SearchableFields : byte
+        {
             AreaDataID,
             CameraAngleID,
             EventFileID,
@@ -128,22 +131,27 @@ namespace DSPRE.ROMFiles {
         #endregion Fields
 
         #region Methods (1)
-        public static string BuildName(int headerID, string name) {
+        public static string BuildName(int headerID, string name)
+        {
             return headerID.ToString("D3") + MapHeader.nameSeparator + name;
         }
 
-        public static MapHeader LoadFromByteArray(byte[] headerData, ushort headerNumber, RomInfo.GameFamilies gameFamily = RomInfo.GameFamilies.NULL) {
+        public static MapHeader LoadFromByteArray(byte[] headerData, ushort headerNumber, RomInfo.GameFamilies gameFamily = RomInfo.GameFamilies.NULL)
+        {
             /* Encapsulate header data into the class appropriate for the gameVersion */
-            if (headerData.Length < MapHeader.length) {
+            if (headerData.Length < MapHeader.length)
+            {
                 MessageBox.Show("File of header " + headerNumber + " is too small and can't store header data.", "Header file too small", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
 
-            if (gameFamily == RomInfo.GameFamilies.NULL) {
+            if (gameFamily == RomInfo.GameFamilies.NULL)
+            {
                 gameFamily = RomInfo.gameFamily;
             }
 
-            switch (gameFamily) {
+            switch (gameFamily)
+            {
                 case RomInfo.GameFamilies.DP:
                     return new HeaderDP(headerNumber, new MemoryStream(headerData));
                 case RomInfo.GameFamilies.Plat:
@@ -153,53 +161,68 @@ namespace DSPRE.ROMFiles {
             }
         }
 
-        public static MapHeader LoadFromFile(string filename, ushort headerNumber, long offsetInFile, RomInfo.GameFamilies gameFamily = RomInfo.GameFamilies.NULL) {
+        public static MapHeader LoadFromFile(string filename, ushort headerNumber, long offsetInFile, RomInfo.GameFamilies gameFamily = RomInfo.GameFamilies.NULL)
+        {
             /* Calculate header offset and load data */
             byte[] headerData = DSUtils.ReadFromFile(filename, offsetInFile, MapHeader.length);
             return LoadFromByteArray(headerData, headerNumber, gameFamily);
         }
 
-        public static MapHeader LoadFromARM9(ushort headerNumber, RomInfo.GameFamilies gameFamily = RomInfo.GameFamilies.NULL) {
+        public static MapHeader LoadFromARM9(ushort headerNumber, RomInfo.GameFamilies gameFamily = RomInfo.GameFamilies.NULL)
+        {
             long headerOffset = RomInfo.headerTableOffset + MapHeader.length * headerNumber;
             return LoadFromFile(RomInfo.arm9Path, headerNumber, headerOffset, gameFamily);
         }
 
-        public static MapHeader GetMapHeader(ushort headerNumber) {
+        public static MapHeader GetMapHeader(ushort headerNumber)
+        {
             MapHeader mapHeader;
 
             //Dynamic headers patch unsupported in DP
-            if (RomInfo.gameFamily.Equals(RomInfo.GameFamilies.DP)) {
+            if (RomInfo.gameFamily.Equals(RomInfo.GameFamilies.DP))
+            {
                 return MapHeader.LoadFromARM9(headerNumber);
             }
 
             /* Check if dynamic headers patch has been applied, and load header from arm9 or a/0/5/0 accordingly */
-            if (PatchToolboxDialog.flag_DynamicHeadersPatchApplied) {
+            if (PatchToolboxDialog.flag_DynamicHeadersPatchApplied)
+            {
                 string path = Filesystem.GetDynamicHeaderPath(headerNumber);
                 mapHeader = MapHeader.LoadFromFile(path, headerNumber, 0);
-            } else {
+            }
+            else
+            {
                 mapHeader = MapHeader.LoadFromARM9(headerNumber);
             }
 
             return mapHeader;
         }
 
-        public static int GetHeaderCount() {
+        public static int GetHeaderCount()
+        {
             int headerCount;
-            if (PatchToolboxDialog.flag_DynamicHeadersPatchApplied) {
+            if (PatchToolboxDialog.flag_DynamicHeadersPatchApplied)
+            {
                 headerCount = Filesystem.GetDynamicHeadersCount();
-            } else {
+            }
+            else
+            {
                 headerCount = RomInfo.GetHeaderCount();
             }
 
             return headerCount;
         }
 
-        public void SaveFile() {
+        public void SaveFile()
+        {
             /* Check if dynamic headers patch has been applied, and save header to arm9 or a/0/5/0 accordingly */
-            if (PatchToolboxDialog.flag_DynamicHeadersPatchApplied) {
+            if (PatchToolboxDialog.flag_DynamicHeadersPatchApplied)
+            {
                 string path = Filesystem.GetDynamicHeaderPath(ID);
                 DSUtils.WriteToFile(path, this.ToByteArray(), 0, 0, fmode: FileMode.Create);
-            } else {
+            }
+            else
+            {
                 uint headerOffset = (uint)(RomInfo.headerTableOffset + MapHeader.length * this.ID);
                 ARM9.WriteBytes(this.ToByteArray(), headerOffset);
             }
@@ -212,16 +235,19 @@ namespace DSPRE.ROMFiles {
     /// <summary>
     /// Class to store map header data from Pokémon D and P
     /// </summary>
-    public class HeaderDP : MapHeader {
+    public class HeaderDP : MapHeader
+    {
         #region Fields (5)
         public byte unknown1 { get; set; }
         public ushort locationName { get; set; }
         #endregion Fields
 
         #region Constructors (1)
-        public HeaderDP(ushort headerNumber, Stream data) {
+        public HeaderDP(ushort headerNumber, Stream data)
+        {
             this.ID = headerNumber;
-            using (BinaryReader reader = new BinaryReader(data)) {
+            using (BinaryReader reader = new BinaryReader(data))
+            {
                 areaDataID = reader.ReadByte();
                 unknown1 = reader.ReadByte();
                 matrixID = reader.ReadUInt16();
@@ -245,9 +271,11 @@ namespace DSPRE.ROMFiles {
         #endregion Constructors
 
         #region Methods (1)
-        public override byte[] ToByteArray() {
+        public override byte[] ToByteArray()
+        {
             MemoryStream newData = new MemoryStream();
-            using (BinaryWriter writer = new BinaryWriter(newData)) {
+            using (BinaryWriter writer = new BinaryWriter(newData))
+            {
                 writer.Write(areaDataID);
                 writer.Write(unknown1);
                 writer.Write(matrixID);
@@ -274,7 +302,8 @@ namespace DSPRE.ROMFiles {
     /// <summary>
     /// Class to store map header data from Pokémon Plat
     /// </summary>
-    public class HeaderPt : MapHeader {
+    public class HeaderPt : MapHeader
+    {
         #region Fields (5)
         public byte areaIcon { get; set; }
         public byte locationName { get; set; }
@@ -282,10 +311,13 @@ namespace DSPRE.ROMFiles {
         #endregion Fields
 
         #region Constructors (1)
-        public HeaderPt(ushort headerNumber, Stream data) {
+        public HeaderPt(ushort headerNumber, Stream data)
+        {
             this.ID = headerNumber;
-            using (BinaryReader reader = new BinaryReader(data)) {
-                try {
+            using (BinaryReader reader = new BinaryReader(data))
+            {
+                try
+                {
                     areaDataID = reader.ReadByte();
                     unknown1 = reader.ReadByte();
                     matrixID = reader.ReadUInt16();
@@ -306,7 +338,9 @@ namespace DSPRE.ROMFiles {
                     battleBackground = (byte)(mapSettings >> 7 & 0b_1111_1);
                     flags = (byte)(mapSettings >> 12 & 0b_1111);
 
-                } catch (EndOfStreamException) {
+                }
+                catch (EndOfStreamException)
+                {
                     MessageBox.Show("Error loading header " + ID + '.', "Unexpected EOF", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -314,9 +348,11 @@ namespace DSPRE.ROMFiles {
         #endregion Constructors
 
         #region Methods(1)
-        public override byte[] ToByteArray() {
+        public override byte[] ToByteArray()
+        {
             MemoryStream newData = new MemoryStream();
-            using (BinaryWriter writer = new BinaryWriter(newData)) {
+            using (BinaryWriter writer = new BinaryWriter(newData))
+            {
                 writer.Write(areaDataID);
                 writer.Write(unknown1);
                 writer.Write(matrixID);
@@ -343,7 +379,8 @@ namespace DSPRE.ROMFiles {
     /// <summary>
     /// Class to store map header data from Pokémon HG and SS -- Updated to Legacy
     /// </summary>
-    public class HeaderHGSS : MapHeader {
+    public class HeaderHGSS : MapHeader
+    {
         #region Fields (7)
         public byte areaIcon { get; set; }
         public byte followMode { get; set; } // 2 bits only
@@ -360,11 +397,14 @@ namespace DSPRE.ROMFiles {
         #endregion
 
         #region Constructors (1)
-        public HeaderHGSS(ushort headerNumber, Stream data) {
+        public HeaderHGSS(ushort headerNumber, Stream data)
+        {
             this.ID = headerNumber;
-            using (BinaryReader reader = new BinaryReader(data)) {
+            using (BinaryReader reader = new BinaryReader(data))
+            {
                 reader.BaseStream.Position = 0;
-                try {
+                try
+                {
                     wildPokemon = reader.ReadUInt16();
                     areaDataID = reader.ReadUInt16();
 
@@ -396,7 +436,9 @@ namespace DSPRE.ROMFiles {
                     flags2 = reader.ReadByte();
 
                     reader.BaseStream.Position = 32;
-                } catch (EndOfStreamException) {
+                }
+                catch (EndOfStreamException)
+                {
                     MessageBox.Show("Error loading header " + ID + '.', "Unexpected EOF", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     // ID = ushort.MaxValue;
                 }
@@ -405,9 +447,11 @@ namespace DSPRE.ROMFiles {
         #endregion Constructors
 
         #region Methods(1)
-        public override byte[] ToByteArray() {
+        public override byte[] ToByteArray()
+        {
             MemoryStream newData = new MemoryStream();
-            using (BinaryWriter writer = new BinaryWriter(newData)) {
+            using (BinaryWriter writer = new BinaryWriter(newData))
+            {
                 writer.Write((ushort)wildPokemon);
                 writer.Write(areaDataID);
 
@@ -432,7 +476,8 @@ namespace DSPRE.ROMFiles {
                     ((followMode & 0b_11) << 18) +
                     ((flags & 0b_1111_111) << 20));
 
-                if (kantoFlag) {
+                if (kantoFlag)
+                {
                     u32Block++;
                 }
 

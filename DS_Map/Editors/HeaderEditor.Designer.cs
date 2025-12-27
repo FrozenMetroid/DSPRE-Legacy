@@ -931,7 +931,7 @@
             // 
             this.cameraUpDown.Location = new System.Drawing.Point(376, 108);
             this.cameraUpDown.Maximum = new decimal(new int[] {
-            127,
+            63,
             0,
             0,
             0});
@@ -944,7 +944,7 @@
             // 
             this.weatherUpDown.Location = new System.Drawing.Point(14, 108);
             this.weatherUpDown.Maximum = new decimal(new int[] {
-            31,
+            127,
             0,
             0,
             0});
