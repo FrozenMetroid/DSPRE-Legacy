@@ -978,17 +978,18 @@ namespace DSPRE
 
         private static void SetNullEncounterID()
         {
-            switch (gameFamily)
-            {
-                case GameFamilies.DP:
-                case GameFamilies.Plat:
-                    nullEncounterID = ushort.MaxValue;
-                    break;
-
-                case GameFamilies.HGSS:
-                    nullEncounterID = Byte.MaxValue;
-                    break;
-            }
+            // switch (gameFamily)
+            // {
+            //     case GameFamilies.DP:
+            //     case GameFamilies.Plat:
+            //         nullEncounterID = ushort.MaxValue;
+            //         break;
+            // 
+            //     case GameFamilies.HGSS:
+            //         nullEncounterID = Byte.MaxValue;
+            //         break;
+            // }
+            nullEncounterID = ushort.MaxValue;
         }
 
         private static void SetAbilityNamesTextNumber()

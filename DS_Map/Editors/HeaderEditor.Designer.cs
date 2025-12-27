@@ -598,7 +598,7 @@
             // 
             this.areaDataUpDown.Location = new System.Drawing.Point(13, 98);
             this.areaDataUpDown.Maximum = new decimal(new int[] {
-            255,
+            65535,
             0,
             0,
             0});
@@ -931,7 +931,7 @@
             // 
             this.cameraUpDown.Location = new System.Drawing.Point(376, 108);
             this.cameraUpDown.Maximum = new decimal(new int[] {
-            255,
+            127,
             0,
             0,
             0});
@@ -944,7 +944,7 @@
             // 
             this.weatherUpDown.Location = new System.Drawing.Point(14, 108);
             this.weatherUpDown.Maximum = new decimal(new int[] {
-            255,
+            31,
             0,
             0,
             0});
@@ -957,7 +957,7 @@
             // 
             this.musicNightUpDown.Location = new System.Drawing.Point(376, 40);
             this.musicNightUpDown.Maximum = new decimal(new int[] {
-            9999,
+            65535,
             0,
             0,
             0});
@@ -970,7 +970,7 @@
             // 
             this.musicDayUpDown.Location = new System.Drawing.Point(14, 41);
             this.musicDayUpDown.Maximum = new decimal(new int[] {
-            9999,
+            65535,
             0,
             0,
             0});
@@ -1314,7 +1314,7 @@
             this.flagsGroupBox.Controls.Add(this.flag4CheckBox);
             this.flagsGroupBox.Location = new System.Drawing.Point(328, 468);
             this.flagsGroupBox.Name = "flagsGroupBox";
-            this.flagsGroupBox.Size = new System.Drawing.Size(281, 136);
+            this.flagsGroupBox.Size = new System.Drawing.Size(281, 180); // 136 originally
             this.flagsGroupBox.TabIndex = 32;
             this.flagsGroupBox.TabStop = false;
             this.flagsGroupBox.Text = "Map Settings";
@@ -1328,10 +1328,10 @@
             "Unallowed",
             "Small only",
             "All"});
-            this.followModeComboBox.Location = new System.Drawing.Point(153, 29);
+            this.followModeComboBox.Location = new System.Drawing.Point(160, 29);
             this.followModeComboBox.MaxDropDownItems = 20;
             this.followModeComboBox.Name = "followModeComboBox";
-            this.followModeComboBox.Size = new System.Drawing.Size(76, 21);
+            this.followModeComboBox.Size = new System.Drawing.Size(70, 21);
             this.followModeComboBox.TabIndex = 57;
             this.followModeComboBox.Visible = false;
             this.followModeComboBox.SelectedIndexChanged += new System.EventHandler(this.followModeComboBox_SelectedIndexChanged);
@@ -1366,7 +1366,7 @@
             this.followModeLabel.AutoSize = true;
             this.followModeLabel.Location = new System.Drawing.Point(150, 13);
             this.followModeLabel.Name = "followModeLabel";
-            this.followModeLabel.Size = new System.Drawing.Size(102, 13);
+            this.followModeLabel.Size = new System.Drawing.Size(104, 13);
             this.followModeLabel.TabIndex = 58;
             this.followModeLabel.Text = "Following Pokemon:";
             this.followModeLabel.Visible = false;
@@ -1385,9 +1385,9 @@
             // battleBackgroundLabel
             // 
             this.battleBackgroundLabel.AutoSize = true;
-            this.battleBackgroundLabel.Location = new System.Drawing.Point(151, 58);
+            this.battleBackgroundLabel.Location = new System.Drawing.Point(170, 58);
             this.battleBackgroundLabel.Name = "battleBackgroundLabel";
-            this.battleBackgroundLabel.Size = new System.Drawing.Size(52, 13);
+            this.battleBackgroundLabel.Size = new System.Drawing.Size(50, 13);
             this.battleBackgroundLabel.TabIndex = 37;
             this.battleBackgroundLabel.Text = "Battle BG";
             // 
@@ -1403,14 +1403,14 @@
             // 
             // battleBackgroundUpDown
             // 
-            this.battleBackgroundUpDown.Location = new System.Drawing.Point(154, 73);
+            this.battleBackgroundUpDown.Location = new System.Drawing.Point(160, 73);
             this.battleBackgroundUpDown.Maximum = new decimal(new int[] {
-            31,
+            255,
             0,
             0,
             0});
             this.battleBackgroundUpDown.Name = "battleBackgroundUpDown";
-            this.battleBackgroundUpDown.Size = new System.Drawing.Size(75, 20);
+            this.battleBackgroundUpDown.Size = new System.Drawing.Size(70, 20);
             this.battleBackgroundUpDown.TabIndex = 36;
             this.battleBackgroundUpDown.ValueChanged += new System.EventHandler(this.battleBackgroundUpDown_ValueChanged);
             // 

@@ -138,7 +138,7 @@ namespace DSPRE.Editors
                     musicDayComboBox.Items.AddRange(PokeDatabase.MusicDB.HGSSMusicDict.Values.ToArray());
                     musicNightComboBox.Items.AddRange(PokeDatabase.MusicDB.HGSSMusicDict.Values.ToArray());
                     weatherComboBox.Items.AddRange(PokeDatabase.Weather.HGSSWeatherDict.Values.ToArray());
-                    wildPokeUpDown.Maximum = 255;
+                    wildPokeUpDown.Maximum = 65535;
 
                     followModeComboBox.Visible = true;
                     followModeLabel.Visible = true;
@@ -148,9 +148,9 @@ namespace DSPRE.Editors
                     flag6CheckBox.Visible = true;
                     flag5CheckBox.Visible = true;
                     flag4CheckBox.Visible = true;
-                    flag6CheckBox.Text = "Flag ?";
-                    flag5CheckBox.Text = "Flag ?";
-                    flag4CheckBox.Text = "Flag ?";
+                    flag6CheckBox.Text = "Radio";
+                    flag5CheckBox.Text = "Incoming";
+                    flag4CheckBox.Text = "Outgoing";
 
                     worldmapCoordsGroupBox.Enabled = true;
                     break;
@@ -269,7 +269,7 @@ namespace DSPRE.Editors
             {
                 return;
             }
-            currentHeader.areaDataID = (byte)areaDataUpDown.Value;
+            currentHeader.areaDataID = (ushort)areaDataUpDown.Value;
         }
         private void internalNameBox_TextChanged(object sender, EventArgs e)
         {
@@ -415,7 +415,15 @@ namespace DSPRE.Editors
                 return;
             }
 
-            internalNameBox.Text = internalNames[currentHeader.ID];
+            if (currentHeader.ID <= internalNames.Count)
+            {
+                internalNameBox.Text = internalNames[currentHeader.ID];
+            }
+            else
+            {
+                MessageBox.Show("Current Header ID is greater than the number of internal names.\nCurrent Header ID:" + currentHeader.ID + "\ninternalNames.Count = " + internalNames.Count, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
             matrixUpDown.Value = currentHeader.matrixID;
             areaDataUpDown.Value = currentHeader.areaDataID;
             scriptFileUpDown.Value = currentHeader.scriptFileID;
@@ -464,8 +472,8 @@ namespace DSPRE.Editors
                         {
                             HeaderHGSS h = (HeaderHGSS)currentHeader;
 
-                            areaIconComboBox.SelectedIndex = h.areaIcon;
-                            locationNameComboBox.SelectedIndex = h.locationName;
+                            // areaIconComboBox.SelectedIndex = h.areaIcon;
+                            // locationNameComboBox.SelectedIndex = h.locationName;
                             musicDayUpDown.Value = h.musicDayID;
                             musicNightUpDown.Value = h.musicNightID;
                             worldmapXCoordUpDown.Value = h.worldmapX;
@@ -534,7 +542,7 @@ namespace DSPRE.Editors
                     ((HeaderPt)currentHeader).locationName = (byte)locationNameComboBox.SelectedIndex;
                     break;
                 default:
-                    ((HeaderHGSS)currentHeader).locationName = (byte)locationNameComboBox.SelectedIndex;
+                    ((HeaderHGSS)currentHeader).locationName = (ushort)locationNameComboBox.SelectedIndex;
                     break;
             }
         }

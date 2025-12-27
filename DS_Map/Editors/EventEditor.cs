@@ -384,7 +384,7 @@ namespace DSPRE.Editors
             else
             {
                 /* Determine area data */
-                byte areaDataID;
+                ushort areaDataID;
                 if (eventMatrix.hasHeadersSection && readGraphicsFromHeader)
                 {
                     ushort headerID = (ushort)eventMatrix.headers[(short)eventMatrixYUpDown.Value, (short)eventMatrixXUpDown.Value];
@@ -407,7 +407,7 @@ namespace DSPRE.Editors
                 }
                 else
                 {
-                    areaDataID = (byte)eventAreaDataUpDown.Value;
+                    areaDataID = (ushort)eventAreaDataUpDown.Value;
                 }
 
                 /* get texture file numbers from area data */

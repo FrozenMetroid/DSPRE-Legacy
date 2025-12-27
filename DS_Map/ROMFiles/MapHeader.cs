@@ -111,7 +111,7 @@ namespace DSPRE.ROMFiles {
 
 
         #region Fields (10)
-        public byte areaDataID { get; set; }
+        public ushort areaDataID { get; set; }
         public byte cameraAngleID { get; set; }
         public ushort eventFileID { get; set; }
         public ushort levelScriptID { get; set; }
@@ -341,31 +341,35 @@ namespace DSPRE.ROMFiles {
     }
 
     /// <summary>
-    /// Class to store map header data from Pokémon HG and SS
+    /// Class to store map header data from Pokémon HG and SS -- Updated to Legacy
     /// </summary>
     public class HeaderHGSS : MapHeader {
         #region Fields (7)
         public byte areaIcon { get; set; }
-        public byte followMode { get; set; }
-        public byte locationName { get; set; }
-        public byte locationType { get; set; }  //4 bits only
-        public byte unknown0 { get; set; } //4 bits only
-        public byte unknown1 { get; set; } //4 bits only
-        public byte worldmapX { get; set; } //6 bits only
-        public byte worldmapY { get; set; } //6 bits only
+        public byte followMode { get; set; } // 2 bits only
+        public ushort locationName { get; set; }
+        public byte locationType { get; set; }  // 4 bits only
+        public byte moveModelArchive { get; set; } // 4 bits only
+        public byte worldmapX { get; set; } // 6 bits only
+        public byte worldmapY { get; set; } // 6 bits only
         public bool kantoFlag { get; set; }
+        public bool hoennFlag { get; set; }
+        public bool sinjohFlag { get; set; }
+        public byte momCallIntroParam { get; set; } // 8 bits only
+        public ushort flags2 { get; set; }
         #endregion
 
         #region Constructors (1)
         public HeaderHGSS(ushort headerNumber, Stream data) {
             this.ID = headerNumber;
             using (BinaryReader reader = new BinaryReader(data)) {
+                reader.BaseStream.Position = 0;
                 try {
-                    wildPokemon = reader.ReadByte();
-                    areaDataID = reader.ReadByte();
+                    wildPokemon = reader.ReadUInt16();
+                    areaDataID = reader.ReadUInt16();
 
                     ushort coords = reader.ReadUInt16();
-                    unknown0 = (byte)(coords & 0b_1111); //get 4 bits
+                    moveModelArchive = (byte)(coords & 0b_1111); //get 4 bits
                     worldmapX = (byte)((coords >> 4) & 0b_1111_11); //get 6 bits after the first 4
                     worldmapY = (byte)((coords >> 10) & 0b_1111_11); //get 6 bits after the first 10
 
@@ -376,25 +380,25 @@ namespace DSPRE.ROMFiles {
                     musicDayID = reader.ReadUInt16();
                     musicNightID = reader.ReadUInt16();
                     eventFileID = reader.ReadUInt16();
-                    locationName = reader.ReadByte();
-                    
-                    byte areaProperties = reader.ReadByte();
-                    areaIcon = (byte)(areaProperties & 0b_1111); //get 4 bits
-                    unknown1 = (byte)((areaProperties >> 4) & 0b_1111); //get 4 bits after the first 4
+                    locationName = reader.ReadUInt16();
+                    areaIcon = reader.ReadByte();
+                    battleBackground = reader.ReadByte();
 
-                    uint last32 = reader.ReadUInt32();
-                    kantoFlag = (last32 & 0b_1) == 1; //get 1 bit
-                    weatherID = (byte)((last32 >> 1) & 0b_1111_111); //get 7 bits after the first one
+                    uint u32Block = reader.ReadUInt32();
+                    kantoFlag = (u32Block & 0b_1) == 1; //get 1 bit
+                    weatherID = (byte)((u32Block >> 1) & 0b_1111_111); //get 7 bits after the first one
+                    locationType = (byte)((u32Block >> 8) & 0b_1111); //get 4 bits after the first 8
+                    cameraAngleID = (byte)((u32Block >> 12) & 0b_1111_11); //get 6 bits after the first 12
+                    followMode = (byte)((u32Block >> 18) & 0b_11); //get 2 bits after the first 17
+                    flags = (byte)(u32Block >> 20 & 0b_1111_1111_1111); //get 12 bits after the first 19
 
-                    locationType = (byte)((last32 >> 8) & 0b_1111); //get 4 bits after the first 8
-                    cameraAngleID = (byte)((last32 >> 12) & 0b_1111_11); //get 6 bits after the first 12
-                    followMode = (byte)((last32 >> 18) & 0b_11); //get 2 bits after the first 17
-                    battleBackground = (byte)((last32 >> 20) & 0b_1111_1); //get 5 bits after the first 19
-                    flags = (byte)(last32 >> 25 & 0b_1111_111); //get 7 bits after the first 24
+                    momCallIntroParam = reader.ReadByte();
+                    flags2 = reader.ReadByte();
 
+                    reader.BaseStream.Position = 32;
                 } catch (EndOfStreamException) {
                     MessageBox.Show("Error loading header " + ID + '.', "Unexpected EOF", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    ID = ushort.MaxValue;
+                    // ID = ushort.MaxValue;
                 }
             }
         }
@@ -404,10 +408,10 @@ namespace DSPRE.ROMFiles {
         public override byte[] ToByteArray() {
             MemoryStream newData = new MemoryStream();
             using (BinaryWriter writer = new BinaryWriter(newData)) {
-                writer.Write((byte)wildPokemon);
+                writer.Write((ushort)wildPokemon);
                 writer.Write(areaDataID);
 
-                ushort worldMapCoordinates = (ushort)((unknown0 & 0b_1111) + ((worldmapX & 0b_1111_11) << 4) + ((worldmapY & 0b_1111_11) << 10));
+                ushort worldMapCoordinates = (ushort)((moveModelArchive & 0b_1111) + ((worldmapX & 0b_1111_11) << 4) + ((worldmapY & 0b_1111_11) << 10));
                 writer.Write(worldMapCoordinates);
 
                 writer.Write(matrixID);
@@ -419,21 +423,23 @@ namespace DSPRE.ROMFiles {
                 writer.Write(eventFileID);
                 writer.Write(locationName);
 
-                byte areaProperties = (byte)((areaIcon & 0b_1111) + ((unknown1 & 0b_1111) << 4));
-                writer.Write(areaProperties);
+                writer.Write(areaIcon);
+                writer.Write(battleBackground);
 
-                uint last32 = (uint)(((weatherID & 0b_1111_111) << 1) +
+                uint u32Block = (uint)(((weatherID & 0b_1111_111) << 1) +
                     ((locationType & 0b_1111) << 8) +
                     ((cameraAngleID & 0b_1111_1) << 12) +
                     ((followMode & 0b_11) << 18) +
-                    ((battleBackground & 0b_1111_1) << 20) +
-                    ((flags & 0b_1111_111) << 25));
+                    ((flags & 0b_1111_111) << 20));
 
                 if (kantoFlag) {
-                    last32++;
+                    u32Block++;
                 }
 
-                writer.Write(last32);
+                writer.Write(u32Block);
+
+                // writer.Write(momCallIntroParam);
+                // writer.Write(flags2);
             }
             return newData.ToArray();
         }
