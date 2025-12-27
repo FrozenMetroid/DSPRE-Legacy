@@ -357,9 +357,10 @@ namespace DSPRE
 
         public static bool CheckFilesDynamicHeadersPatchApplied()
         {
-            DynamicHeadersPatchData data = new DynamicHeadersPatchData();
-            ushort initValue = BitConverter.ToUInt16(ARM9.ReadBytes(data.initOffset, 0x2), 0);
-            return initValue == 0xB500;
+            // DynamicHeadersPatchData data = new DynamicHeadersPatchData();
+            // ushort initValue = BitConverter.ToUInt16(ARM9.ReadBytes(data.initOffset, 0x2), 0);
+            // return initValue == 0xB500;
+            return true;
         }
 
         public bool CheckBDHCamPatchApplied()

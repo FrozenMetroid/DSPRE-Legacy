@@ -472,8 +472,8 @@ namespace DSPRE.Editors
                         {
                             HeaderHGSS h = (HeaderHGSS)currentHeader;
 
-                            // areaIconComboBox.SelectedIndex = h.areaIcon;
-                            // locationNameComboBox.SelectedIndex = h.locationName;
+                            areaIconComboBox.SelectedIndex = h.areaIcon;
+                            locationNameComboBox.SelectedIndex = h.locationName;
                             musicDayUpDown.Value = h.musicDayID;
                             musicNightUpDown.Value = h.musicNightID;
                             worldmapXCoordUpDown.Value = h.worldmapX;
