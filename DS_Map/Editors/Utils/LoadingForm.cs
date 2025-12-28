@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace DSPRE.Editors.Utils
@@ -60,7 +61,7 @@ namespace DSPRE.Editors.Utils
             try
             {
                 string factFilePath = Path.Combine(Application.StartupPath, "Tools", "pokefatcs.txt");
-                pokemonFacts = File.ReadAllLines(factFilePath)
+                pokemonFacts = File.ReadAllLines(factFilePath, Encoding.UTF8)
                                   .Where(line => !string.IsNullOrWhiteSpace(line))
                                   .ToArray();
                 if (pokemonFacts.Length == 0)

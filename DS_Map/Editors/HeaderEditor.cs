@@ -1023,7 +1023,7 @@ namespace DSPRE.Editors
                 for (ushort i = 0; i < internalNames.Count; i++)
                 {
                     MapHeader h;
-                    if (PatchToolboxDialog.flag_DynamicHeadersPatchApplied || PatchToolboxDialog.CheckFilesDynamicHeadersPatchApplied())
+                    if (PatchToolboxDialog.flag_DynamicHeadersPatchApplied || PatchToolboxDialog.CheckFilesDynamicHeadersPatchApplied()) // always true for legacy
                     {
                         h = MapHeader.LoadFromFile(RomInfo.gameDirs[DirNames.dynamicHeaders].unpackedDir + "\\" + i.ToString("D4"), i, 0);
                     }
