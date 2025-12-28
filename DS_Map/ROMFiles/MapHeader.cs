@@ -483,8 +483,8 @@ namespace DSPRE.ROMFiles
 
                 writer.Write(u32Block);
 
-                // writer.Write(momCallIntroParam);
-                // writer.Write(flags2);
+                writer.Write(momCallIntroParam);
+                writer.Write(flags2);
             }
             return newData.ToArray();
         }
