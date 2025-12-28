@@ -61,7 +61,7 @@ namespace DSPRE.Editors.Utils
             try
             {
                 string factFilePath = Path.Combine(Application.StartupPath, "Tools", "pokefatcs.txt");
-                pokemonFacts = File.ReadAllLines(factFilePath, Encoding.UTF8)
+                pokemonFacts = File.ReadAllLines(factFilePath/*, Encoding.UTF8*/)
                                   .Where(line => !string.IsNullOrWhiteSpace(line))
                                   .ToArray();
                 if (pokemonFacts.Length == 0)
