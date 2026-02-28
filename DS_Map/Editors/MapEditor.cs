@@ -82,7 +82,7 @@ namespace DSPRE.Editors
 
             for (int i = 0; i < currentMapFile.buildings.Count; i++)
             {
-                id = currentMapFile.buildings[i].modelID;wd
+                id = currentMapFile.buildings[i].modelID;
                 string baseName = (i + 1).ToString("D2") + MapHeader.nameSeparator;
                 try
                 {
