@@ -82,7 +82,7 @@ namespace DSPRE.Editors
 
             for (int i = 0; i < currentMapFile.buildings.Count; i++)
             {
-                id = currentMapFile.buildings[i].modelID;
+                id = currentMapFile.buildings[i].modelID;wd
                 string baseName = (i + 1).ToString("D2") + MapHeader.nameSeparator;
                 try
                 {
@@ -1522,6 +1522,10 @@ namespace DSPRE.Editors
                 case 0x04: // Grass
                     paintPen = new Pen(Color.FromArgb(Transparency, Color.LimeGreen));
                     paintBrush = new SolidBrush(Color.FromArgb(Transparency, Color.LimeGreen));
+                    break;
+                case 0x05: // Sand
+                    paintPen = new Pen(Color.FromArgb(Transparency, Color.Moccasin));
+                    paintBrush = new SolidBrush(Color.FromArgb(Transparency, Color.Moccasin));
                     break;
                 case 0x06: // Stairs and ice
                     paintPen = new Pen(Color.FromArgb(Transparency, Color.PowderBlue));

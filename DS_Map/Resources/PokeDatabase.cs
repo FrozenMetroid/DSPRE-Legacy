@@ -650,11 +650,14 @@ namespace DSPRE.Resources {
                 ["IPGJ"] = GameVersions.SoulSilver
             };
 
-            public static Dictionary<byte, string> MapCollisionPainters = new Dictionary<byte, string>() {
+            public static Dictionary<byte, string> MapCollisionPainters = new Dictionary<byte, string>()
+            {
                 [0x00] = "[00] Walkable",
                 [0x01] = "[01] Snow",
                 [0x02] = "[02] Leaves",
+                [0x03] = "[03] Branches",
                 [0x04] = "[04] Grass",
+                [0x05] = "[05] Sand",
                 [0x06] = "[06] Stairs & Ice",
                 [0x07] = "[07] Metal",
                 [0x0A] = "[0A] Cavern floor",
